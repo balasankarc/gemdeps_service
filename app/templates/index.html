@@ -1,22 +1,64 @@
 <html>
     <head>
         <title>Debian Ruby Gem Dependency Service</title>
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
         <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css" />
     </head>
     <body>
         <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
-        <form action="get_dependency" method="GET">
-            <div class="row" style="margin-left:5%;width:90%">
-                <div class="col-md-4">
-                    <input type="text" name="gemname" id="gemname" class="form-control" placeholder="Gem Name" /> 
+        <div class="row">
+            <form action="/" method="POST">
+                <div class="row" style="margin-left:5%;width:90%">
+                    <div class="col-md-4">
+                        <input type="text" name="gemname" id="gemname" value="{{gemname}}" class="form-control" placeholder="Gem Name" required/> 
+                    </div>
+                    <div class="col-md-4">
+                        <select id="appname" name="appname" multiple="multiple" required>
+                            <option value="diaspora" {% if 'diaspora' in gemlist%} selected="true"  {% endif %}>Diaspora</option>
+                            <option value="gitlab" {% if 'gitlab' in gemlist%} selected="true"  {% endif %}>GitLab</option>
+                            <option value="asciinema" {% if 'asciinema' in gemlist%} selected="true"  {% endif %}>Asciinema</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success form-control">Submit</button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <input type="text" name="appname" id="appname" class="form-control" placeholder="Gem Name" /> 
+            </form>
+        </div>
+        <div class="row" style="margin-left:5%;width:90%">
+            {% if gemlist %}
+            {% for app in gemlist %}
+            {% if gemlist[app] %}
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ app }}</div>
+                <div class="panel-body">
+                    {% for gem in gemlist[app] %}
+                    Name : {{ gem['name'] }} <br />
+                    Group: {{ gem ['group'] }} <br />
+                    Debian Name : {{ gem['debian_name'] }} <br />
+                    Debian Version: {{gem ['version'] }} <br />
+                    Parent : {{ gem['parent'] }} <br />
+                    Requirement: {{ gem['requirement']}}
+
+                    {% endfor %}
                 </div>
-                <div class="col-md-4">
-                    <button class="btn btn-success form-control">Submit</button>
-                </div>
-        </form>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% if flag == 0 %}
+            <div class="alert alert-danger">No results returned</div>
+            {% endif %}
+        </div>
+        <script type="text/javascript">
+$(document).ready(function() {
+    $('#appname').multiselect(
+            {nonSelectedText: 'Select apps to check!', buttonWidth: '100%'}
+            );
+});
+        </script>
     </body>
 </html>
