@@ -9,6 +9,56 @@
         <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css" />
     </head>
     <body style="margin-left:5%;width:90%">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">GemDeps</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Resources<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Ruby Team @ Debian Wiki</a></li>
+                                <li><a href="#">Ruby Packaging HowTo</a></li>
+                                <li><a href="#">Debian Ruby Alioth Git Repo</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">WNPP Packages</a></li>
+                                <li><a href="#">NEW Packages</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Unofficial Gitlab repo</a></li>
+                            </ul>
+                        </li>
+                         <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Development Statistics<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Diaspora</a></li>
+                                <li><a href="#">GitLab</a></li>
+                                <li><a href="#">Asciinema</a></li>
+                            </ul>
+                        </li>
+                          <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Gemdeps</a></li>
+                                <li><a href="#">Source</a></li>
+                                <li><a href="#">Gemfileparser</a></li>
+                                <li><a href="#">Copyright</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
         <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
         <div class="row">
             <form action="/" method="POST">
@@ -85,27 +135,27 @@ var substringMatcher = function(strs) {
 };
 
 /*var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-    'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-];
-*/
+  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ];
+ */
                     var states = {{gemnames}}
 
-$('.typeahead').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-},
-{
-    name: 'states',
-    source: substringMatcher(states)
-});
+                    $('.typeahead').typeahead({
+                        hint: true,
+                        highlight: true,
+                        minLength: 1
+                    },
+                    {
+                        name: 'states',
+                        source: substringMatcher(states)
+                    });
         </script>
     </body>
 </html>
