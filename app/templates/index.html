@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" />
         <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css" />
     </head>
-    <body>
+    <body style="margin-left:5%;width:90%">
         <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
         <div class="row">
             <form action="/" method="POST">
@@ -33,11 +33,11 @@
             {% for app in gemlist %}
             {% if gemlist[app] %}
             <div class="panel panel-default">
-                <div class="panel-heading">{{ app }}</div>
+                <div class="panel-heading">{{ app.title() }}</div>
                 <div class="panel-body">
                     {% for gem in gemlist[app] %}
                     Name : {{ gem['name'] }} <br />
-                    Group: {{ gem ['group'] }} <br />
+                    Group: {{ gem ['group'].title() }} <br />
                     Debian Name : {{ gem['debian_name'] }} <br />
                     Debian Version: {{gem ['version'] }} <br />
                     Parent : {{ gem['parent'] }} <br />
