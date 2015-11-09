@@ -1,4 +1,4 @@
-from app import app
+from gemdeps import app
 
 
 app.run(debug=True)

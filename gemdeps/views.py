@@ -1,4 +1,4 @@
-from app import app
+from gemdeps import app
 from flask import render_template, request
 import json
 import os
