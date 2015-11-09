@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Debian Ruby Gem Dependency Service</title>
+        <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" />
+    </head>
+    <body>
+        <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
+        <form action="get_dependency" method="GET">
+            <div class="row" style="margin-left:5%;width:90%">
+                <div class="col-md-4">
+                    <input type="text" name="gemname" id="gemname" class="form-control" placeholder="Gem Name" /> 
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="appname" id="appname" class="form-control" placeholder="Gem Name" /> 
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-success form-control">Submit</button>
+                </div>
+        </form>
+    </body>
+</html>
