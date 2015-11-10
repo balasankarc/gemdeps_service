@@ -22,7 +22,6 @@ def index():
         gemnames += [str(x['name']) for x in deps]
     gemnames = list(set(gemnames))
     gemnames = Markup(gemnames)
-    print completedeplist
     if request.method == 'GET':
         return render_template('index.html', gemnames=gemnames)
     else:
