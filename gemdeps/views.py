@@ -9,7 +9,7 @@ from gemdeps import app
 @app.route('/', methods=['GET', 'POST'])
 def index():
     completedeplist = {}
-    gemnames = "["
+    gemnames = []
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     for app in ['diaspora', 'gitlab', 'asciinema']:
         appname = app + "_debian_status.json"
@@ -19,9 +19,8 @@ def index():
         inputfile.close()
         deps = json.loads(filecontent)
         completedeplist[app] = deps
-        gemnames += ", ".join([str('"' + x['name'] + '"') for x in deps])
-        gemnames += ", "
-    gemnames += "]"
+        gemnames += [str(x['name']) for x in deps]
+    gemnames = list(set(gemnames))
     gemnames = Markup(gemnames)
     print completedeplist
     if request.method == 'GET':
