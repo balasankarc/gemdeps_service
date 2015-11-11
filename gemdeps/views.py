@@ -24,22 +24,27 @@ def index():
     gemnames.sort()
     gemnames = Markup(gemnames)
     if request.method == 'GET':
-        return render_template('index.html', gemnames=gemnames)
+        if request.args:
+            apps = request.args.getlist('appname')
+            gemname = request.args.get('gemname')
+        else:
+            return render_template('index.html', gemnames=gemnames)
     else:
         apps = request.form.getlist('appname')
         gemname = request.form.get('gemname')
-        gems = {}
-        flag = 0
-        for app in apps:
+    gems = {}
+    flag = 0
+    for app in apps:
+        if app in completedeplist:
             gem = [x for x in completedeplist[app] if x['name'] == gemname]
             if gem:
                 flag = 1
             gems[app] = gem
-        return render_template('index.html',
-                               gemnames=gemnames,
-                               gemname=gemname,
-                               gemlist=gems,
-                               flag=flag)
+    return render_template('index.html',
+                           gemnames=gemnames,
+                           gemname=gemname,
+                           gemlist=gems,
+                           flag=flag)
 
 
 @app.route('/status/<appname>')
