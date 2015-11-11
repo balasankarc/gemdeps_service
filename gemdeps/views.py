@@ -21,6 +21,7 @@ def index():
         completedeplist[app] = deps
         gemnames += [str(x['name']) for x in deps]
     gemnames = list(set(gemnames))
+    gemnames.sort()
     gemnames = Markup(gemnames)
     if request.method == 'GET':
         return render_template('index.html', gemnames=gemnames)
