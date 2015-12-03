@@ -73,3 +73,8 @@ def status(appname):
                            total=total,
                            percent_complete=percent_complete
                            )
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')

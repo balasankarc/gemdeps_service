@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>Debian Ruby Gem Dependency Service</title>
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap-multiselect.min.js"></script>
+        <script type="text/javascript" src="/static/js/typeahead.bundle.min.js"></script>
+        <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css" />
+    </head>
+    <body class="container" style="margin-left:5%;width:90%">
+        {% include 'navbar.html' %}
+        <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
+        <div class="row">
+            <div class="col-md-6"> 
+                <h2>Gemdeps</h2>
+                <p style="text-align:justify">
+                    Gemdeps is a command line tool intended to find out the details of all dependencies of a Ruby gem or application. Originally written by Cédric Boutillier in Ruby, it was ported to Python by Balasankar C, as a personal project. It mainly generates two outputs in JSON format - A dependency list of the application/gem selected and the status of their packaging in Debian. Additionally, it can also generate packaging progressbars in HTML format and Dependency graph in PDF format using GraphViz. The source code of the Ruby version  is available <a target="_blank" href="https://gitlab.com/debian-ruby/gemdeps">here </a> and Python version is available <a target="_blank" href="https://gitlab.com/balasankarc/python-gemdeps/">here</a>.
+                </p>
+            </div>
+            <div class="col-md-6"> 
+                <h2>Gemdeps Web Service</h2>
+                <p style="text-align:justify">
+                    This web service provides a web interface to the Gemdeps program, using cached JSON inputs. The JSON inputs are generated periodically by the CLI program and this web service make use of them to generate progress bars and dependency inforation. The source code behind this web service is available <a target="_blank" href="https://gitlab.com/balasankarc/gemdeps_service">here</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6"> 
+                <h2>Gemfileparser</h2>
+                <p style="text-align:justify">
+                    Gemfileparser is a Python library written by Balasankar C, intended to be a minimal port of the Gemnasium gem for Ruby. It parses Gemfiles and gemspec files and identifies the dependencies and their details specified in those files. It is the initial part of the Gemdeps program. The source code is available <a target="_blank" href="https://gitlab.com/balasankarc/gemfileparser/">here</a>.
+                </p>
+            </div>
+            <div class="col-md-6"> 
+                <h2>License and Copyright</h2>
+                The following copyright information applies to Gemdeps, Gemdeps web service and Gemfileparser library. <br />
+                Copyright: 2015, Balasankar C &lt;balasankarc@autistici.org&gt; <br />
+                Gemdeps and Gemfileparser are released under GPL-3.0+<br />
+                Gemdeps web service is released under AGPL-3.0+
+            </div>
+        </div>
+    </body>
+</html>
