@@ -44,6 +44,8 @@ def index():
 
 @app.route('/status/<appname>')
 def status(appname):
+    ignore_list = ['mini_portile2', 'newrelic_rpm',
+                   'newrelic-grape', 'gitlab-grit']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appfilename = appname + "_debian_status.json"
     filepath = os.path.join(SITE_ROOT, "static", appfilename)
@@ -55,18 +57,24 @@ def status(appname):
     unpackaged_count = 0
     itp_count = 0
     total = 0
-    for n in deps:
-        if n['status'] == 'Packaged' or n['status'] == 'NEW':
-            packaged_count += 1
-        elif n['status'] == 'ITP':
-            itp_count += 1
+    final_list = []
+    for i in deps:
+        if i['name'] in ignore_list:
+            continue
         else:
-            unpackaged_count += 1
-    total = len(deps)
+            final_list.append(i)
+            if i['status'] == 'Packaged' or i['status'] == 'NEW':
+                packaged_count += 1
+            elif i['status'] == 'ITP':
+                itp_count += 1
+            else:
+                unpackaged_count += 1
+    total = len(final_list)
+    print total
     percent_complete = (packaged_count * 100) / total
     return render_template('status.html',
                            appname=appname.title(),
-                           deps=deps,
+                           deps=final_list,
                            packaged_count=packaged_count,
                            unpackaged_count=unpackaged_count,
                            itp_count=itp_count,
