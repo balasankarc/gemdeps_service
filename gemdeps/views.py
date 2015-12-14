@@ -45,7 +45,7 @@ def index():
 @app.route('/status/<appname>')
 def status(appname):
     ignore_list = ['mini_portile2', 'newrelic_rpm',
-                   'newrelic-grape', 'gitlab-grit']
+                   'newrelic-grape']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appfilename = appname + "_debian_status.json"
     filepath = os.path.join(SITE_ROOT, "static", appfilename)
