@@ -57,6 +57,7 @@ def status(appname):
     unpackaged_count = 0
     itp_count = 0
     total = 0
+    mismatch = 0
     final_list = []
     for i in deps:
         if i['name'] in ignore_list:
@@ -69,6 +70,8 @@ def status(appname):
                 itp_count += 1
             else:
                 unpackaged_count += 1
+            if i['satisfied'] == False:
+                mismatch += 1
     total = len(final_list)
     print total
     percent_complete = (packaged_count * 100) / total
@@ -78,6 +81,7 @@ def status(appname):
                            packaged_count=packaged_count,
                            unpackaged_count=unpackaged_count,
                            itp_count=itp_count,
+                           mismatch_count=mismatch,
                            total=total,
                            percent_complete=percent_complete
                            )
