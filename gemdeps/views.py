@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 from flask import Markup, render_template, request
 
@@ -52,6 +53,9 @@ def status(appname):
     inputfile = open(filepath)
     filecontent = inputfile.read()
     inputfile.close()
+    updated_time = time.strftime(
+        "%d/%m/%Y %H:%M:%S", time.gmtime(os.path.getmtime(filepath)))
+    updated_time
     deps = json.loads(filecontent)
     packaged_count = 0
     unpackaged_count = 0
@@ -83,7 +87,8 @@ def status(appname):
                            itp_count=itp_count,
                            mismatch_count=mismatch,
                            total=total,
-                           percent_complete=percent_complete
+                           percent_complete=percent_complete,
+                           updated_time=updated_time
                            )
 
 
