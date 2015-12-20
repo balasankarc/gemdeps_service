@@ -26,6 +26,8 @@ def index():
     completedeplist = {}
     gemnames = []
     apps = list_apps()
+    if not apps:
+        return render_template('no_files.html')
     for app in apps:
         filepath = apps[app]
         inputfile = open(filepath)
@@ -60,6 +62,8 @@ def index():
 @app.route('/status/<appname>')
 def status(appname):
     apps = list_apps()
+    if not apps:
+        return render_template('no_files.html')
     ignore_list = ['mini_portile2', 'newrelic_rpm',
                    'newrelic-grape']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
