@@ -19,9 +19,9 @@
                     </div>
                     <div class="col-md-4">
                         <select id="appname" name="appname" multiple="multiple" required>
-                            <option value="diaspora" {% if 'diaspora' in gemlist%} selected="true"  {% endif %}>Diaspora</option>
-                            <option value="gitlab" {% if 'gitlab' in gemlist%} selected="true"  {% endif %}>GitLab</option>
-                            <option value="asciinema" {% if 'asciinema' in gemlist%} selected="true"  {% endif %}>Asciinema</option>
+                            {% for app in apps %}
+                                <option value="{{app}}" {% if "{{app}}" in gemlist %} selected="true" {% endif %}>{{app.title()}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-4">

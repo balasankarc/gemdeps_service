@@ -1,20 +1,33 @@
 import json
 import os
 import time
+import glob
 
 from flask import Markup, render_template, request
 
 from gemdeps import app
 
 
+def list_apps():
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+    list_of_json = glob.glob(os.path.join(
+        SITE_ROOT, 'static', '*_debian_status.json'))
+    apps = {}
+    for jsonfile in list_of_json:
+        pos = len(jsonfile) - jsonfile[::-1].index('/')
+        appfilename = jsonfile[pos:]
+        appname = appfilename[:appfilename.index('_')]
+        apps[appname] = jsonfile
+    return apps
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     completedeplist = {}
     gemnames = []
-    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-    for app in ['diaspora', 'gitlab', 'asciinema']:
-        appname = app + "_debian_status.json"
-        filepath = os.path.join(SITE_ROOT, "static", appname)
+    apps = list_apps()
+    for app in apps:
+        filepath = apps[app]
         inputfile = open(filepath)
         filecontent = inputfile.read()
         inputfile.close()
@@ -25,7 +38,7 @@ def index():
     gemnames.sort()
     gemnames = Markup(gemnames)
     if request.method == 'GET':
-        return render_template('index.html', gemnames=gemnames)
+        return render_template('index.html', gemnames=gemnames, apps=apps)
     else:
         apps = request.form.getlist('appname')
         gemname = request.form.get('gemname')
@@ -40,11 +53,13 @@ def index():
                                gemnames=gemnames,
                                gemname=gemname,
                                gemlist=gems,
-                               flag=flag)
+                               flag=flag,
+                               apps=apps)
 
 
 @app.route('/status/<appname>')
 def status(appname):
+    apps = list_apps()
     ignore_list = ['mini_portile2', 'newrelic_rpm',
                    'newrelic-grape']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -88,10 +103,12 @@ def status(appname):
                            mismatch_count=mismatch,
                            total=total,
                            percent_complete=percent_complete,
-                           updated_time=updated_time
+                           updated_time=updated_time,
+                           apps=apps
                            )
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    apps = list_apps()
+    return render_template('about.html', apps=apps)
