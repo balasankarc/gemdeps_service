@@ -74,7 +74,6 @@ def status(appname):
     inputfile.close()
     updated_time = time.strftime(
         "%d/%m/%Y %H:%M:%S %Z", time.gmtime(os.path.getmtime(filepath)))
-    updated_time
     deps = json.loads(filecontent)
     packaged_count = 0
     unpackaged_count = 0
