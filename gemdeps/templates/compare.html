@@ -1,0 +1,132 @@
+<html>
+    <head>
+        <title>Debian Ruby Gem Dependency Service</title>
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap-multiselect.min.js"></script>
+        <script type="text/javascript" src="/static/js/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.tablesorter.widgets.min.js"></script>
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css" />
+        <script>
+$(function(){
+    $.extend($.tablesorter.themes.bootstrap, {
+        table      : 'table table-bordered',
+        header     : 'bootstrap-header',
+        sortNone   : 'bootstrap-icon-unsorted',
+        sortAsc    : 'icon-chevron-up',
+        sortDesc   : 'icon-chevron-down',
+    });
+
+    $('table').tablesorter({
+        theme : "bootstrap",
+        headerTemplate : '{content} {icon}',
+        widgets : [ "uitheme","indexFirstColumn" ],
+        usNumberFormat : false,
+        sortReset      : true,
+        sortRestart    : true
+    });
+});
+
+
+
+$(function() {
+    // add new widget called indexFirstColumn
+    $.tablesorter.addWidget({
+        // give the widget a id
+        id: "indexFirstColumn",
+        // format is called when the on init and when a sorting has finished
+        format: function(table) {               
+            // loop all tr elements and set the value for the first column  
+            for(var i=0; i < table.tBodies[0].rows.length; i++) {
+                $("tbody tr:eq(" + i + ") td:first",table).html(i+1);
+            }                                   
+        }
+    });
+});
+
+
+
+        </script>
+        <style>
+.table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+    background-color: #E1A3E0;
+}
+.table > thead > tr > td.itp, .table > tbody > tr > td.itp, .table > tfoot > tr > td.itp, .table > thead > tr > th.itp, .table > tbody > tr > th.itp, .table > tfoot > tr > th.itp, .table > thead > tr.itp > td, .table > tbody > tr.itp > td, .table > tfoot > tr.itp > td, .table > thead > tr.itp > th, .table > tbody > tr.itp > th, .table > tfoot > tr.itp > th {
+    background-color: #5BC0DE;
+}
+
+.wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
+.span1 {
+    text-align: center;
+}
+.green {
+    background-color: #DFF0D8;
+}
+.red {
+    background-color: #F2DEDE;
+}
+.yellow {
+    background-color: #FCF8E3;
+}
+.cyan {
+    background-color: #5BC0DE;
+}
+.violet {
+    background-color: rgba(230, 94, 255,0.5);
+}
+        </style>
+
+    </head>
+    <body class="container" style="margin-left:5%;width:90%">
+        {% include 'navbar.html' %}
+        <center><h1>Debian Packaging Status Comparator</h1></center>
+            <div class="row well">
+                <table class="table table-bordered table-sortable">
+                    <thead>
+                        <tr>
+                            <th data-sorter="false" class="{sorter: false}">Sl. No</th>
+                            <th>Gem Name</th>
+                            {% for app in selected_apps %}
+                            <th>{{app}}</th>
+                            {% endfor %}
+                            <th>Debian Version</th>
+                            <th>Satisfied?</th>
+                        </tr>
+                    </thead>
+                    {% set count = 1 %}
+                    {% for gem in final %}
+                    <tr class={{color[gem]}}>
+                        <td>
+                            {{count}}
+                        </td>
+                        {% set count = count+1 %}
+                        <td>
+                            {{gem}}  <br />
+                            <a href="http://rubygems.org/gems/{{gem}}">RG</a> | 
+                            <a href="/?gemname={{gem}}">Info</a>
+                        </td>
+                        {% for app in final[gem] %}
+                        <td>{{final[gem][app]['requirement']}} </td>
+                        {% endfor %}
+                        {% set keys= final[gem].keys() %}
+                        <td>{{final[gem][keys[0]]['version']}}</td>
+                        {% if color[gem] =='green' %}
+                        <td>Yes</td>
+                        {% elif color[gem] == 'red' %}
+                        <td>No</td>
+                        {% else %}
+                        <td>Mismatch</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            * RG = Link to RubyGems page || * Info = Info from gemdeps
+    </body>
+</html>

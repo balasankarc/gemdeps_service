@@ -3,7 +3,7 @@ import os
 import time
 import glob
 
-from flask import Markup, render_template, request
+from flask import Markup, render_template, request, redirect
 
 from gemdeps import app
 
@@ -68,7 +68,7 @@ def index():
 @app.route('/status/<appname>')
 def status(appname):
     apps = list_apps()
-    if not apps:
+    if not apps or appname not in apps:
         return render_template('no_files.html')
     ignore_list = ['mini_portile2', 'newrelic_rpm', 'newrelic-grape',
                    'rb-fsevent', 'eco', 'eco-source']
@@ -121,3 +121,77 @@ def status(appname):
 def about():
     apps = list_apps()
     return render_template('about.html', apps=apps)
+
+
+def compare_lists(first_list, second_list):
+    first_list_names = [x['name'] for x in first_list]
+    result = []
+    for item in second_list:
+        if item['name'] in first_list_names:
+            result.append(item)
+    return result
+
+
+@app.route('/compare')
+def compare():
+    available_apps = list_apps()
+    apps = request.args.getlist('appname')
+    if len(apps) < 2:
+        if len(apps) == 1:
+            return redirect("/status/%s" % apps[0])
+        else:
+            return redirect("/")
+    result = []
+    app_dep_list = []
+    for appname in apps:
+        print appname
+        if appname not in available_apps:
+            apps.remove(appname)
+            continue
+        else:
+            SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+            appfilename = appname + "_debian_status.json"
+            filepath = os.path.join(SITE_ROOT, "static", appfilename)
+            inputfile = open(filepath)
+            filecontent = inputfile.read()
+            inputfile.close()
+            deps = json.loads(filecontent)
+            app_dep_list.append(deps)
+    first_list = app_dep_list[0]
+    second_list = app_dep_list[1]
+    counter = 1
+    while counter < len(app_dep_list):
+        counter = counter + 1
+        result = compare_lists(first_list, second_list)
+        first_list = result
+        if counter < len(app_dep_list):
+            second_list = app_dep_list[counter]
+    final = {}
+    for i in result:
+        current = {}
+        counter = 0
+        while counter < len(app_dep_list):
+            appname = apps[counter]
+            for item in app_dep_list[counter]:
+                if item['name'] == i['name']:
+                    current[appname] = item
+            counter = counter+1
+        final[i['name']] = current
+    color = {}
+    for gem in final:
+        keys = final[gem].keys()
+        current_color = final[gem][keys[0]]['color']
+        if current_color != 'green':
+            color[gem] = 'red'
+        else:
+            for app in final[gem]:
+                if current_color != final[gem][app]['color']:
+                    color[gem] = 'violet'
+                    break
+                color[gem] = current_color
+    return render_template('compare.html',
+                           apps=available_apps,
+                           selected_apps=apps,
+                           final=final,
+                           color=color
+                           )
