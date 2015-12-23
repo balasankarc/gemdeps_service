@@ -109,7 +109,7 @@ $(function() {
                         <td>
                             {{gem}}  <br />
                             <a href="http://rubygems.org/gems/{{gem}}">RG</a> | 
-                            <a href="/?gemname={{gem}}">Info</a>
+                            <a href="/info?gemname={{gem}}">Info</a>
                         </td>
                         {% for app in final[gem] %}
                         <td>{{final[gem][app]['requirement']}} </td>

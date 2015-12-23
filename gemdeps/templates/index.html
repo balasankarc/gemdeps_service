@@ -10,55 +10,53 @@
     </head>
     <body class="container" style="margin-left:5%;width:90%">
         {% include 'navbar.html' %}
-        <h1 style='text-align:center'>Debian Ruby Gem Dependency Service</h1>
-        <div class="row">
-            <form action="/" method="GET">
-                <div class="row" style="margin-left:5%;width:90%">
-                    <div class="col-md-4">
-                        <input class="typeahead form-control" style="width:100%" type="text" placeholder="Gem Name" name="gemname" id="gemname" value="{{gemname}}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <select id="appname" name="appname" multiple="multiple" required>
-                            {% for app in apps %}
+        <h1 style='text-align:center;margin-bottom:5%'>Debian Ruby Gem Dependency Service</h1>
+        <div class="row" >
+            <div class="col-md-6" style="border-right: 1px solid black">
+                <h2 style="text-align:center;margin-bottom:5%;margin-top:0;padding-top:0">Gem Info Generator</h2>
+                <form action="/info" method="GET">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input class="typeahead form-control" style="width:100%" type="text" placeholder="Gem Name" name="gemname" id="gemname" value="{{gemname}}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="appname" name="appname" multiple="multiple" required>
+                                {% for app in apps %}
                                 <option value="{{app}}" {% if "{{app}}" in gemlist %} selected="true" {% endif %}>{{app.title()}}</option>
-                            {% endfor %}
-                        </select>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success form-control">Submit</button>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-success form-control">Submit</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="row" style="margin-left:5%;width:90%">
-            {% if gemlist %}
-            {% for app in gemlist %}
-            {% if gemlist[app] %}
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ app.title() }}</div>
-                <div class="panel-body">
-                    {% for gem in gemlist[app] %}
-                    Name : {{ gem['name'] }} <br />
-                    Group: {{ gem ['group'].title() }} <br />
-                    Debian Name : {{ gem['debian_name'] }} <br />
-                    Debian Version: {{gem ['version'] }} <br />
-                    Parent : {{ gem['parent'] }} <br />
-                    Requirement: {{ gem['requirement']}}
-
-                    {% endfor %}
-                </div>
+                </form>
             </div>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% if flag == 0 %}
-            <div class="alert alert-danger">No results returned</div>
-            {% endif %}
+            <div class="col-md-6" style="border-right: 1px solid black">
+                <h2 style="text-align:center;margin-bottom:5%;margin-top:0;padding-top:0">Common Gem Comparator</h2>
+                <form action="/compare" method="GET">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select id="appname2" name="appname" multiple="multiple" required>
+                                {% for app in apps %}
+                                <option value="{{app}}" {% if "{{app}}" in gemlist %} selected="true" {% endif %}>{{app.title()}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-success form-control">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
         <script type="text/javascript">
 $(document).ready(function() {
     $('#appname').multiselect(
             {nonSelectedText: 'Select apps to check!', buttonWidth: '100%'}
+            );
+    $('#appname2').multiselect(
+            {nonSelectedText: 'Select apps to compare!', buttonWidth: '100%'}
             );
 });
         </script>
@@ -96,18 +94,18 @@ var substringMatcher = function(strs) {
   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
   ];
  */
-                    var states = {{gemnames}}
+                                var states = {{gemnames}}
 
-                    $('.typeahead').typeahead({
-                        hint: true,
-                        highlight: true,
-                        minLength: 1
-                    },
-                    {
-                        name: 'states',
-                        limit: 100,
-                        source: substringMatcher(states)
-                    });
+                                $('.typeahead').typeahead({
+                                    hint: true,
+                                    highlight: true,
+                                    minLength: 1
+                                },
+                                {
+                                    name: 'states',
+                                    limit: 100,
+                                    source: substringMatcher(states)
+                                });
         </script>
     </body>
 </html>

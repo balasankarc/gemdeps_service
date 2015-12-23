@@ -23,6 +23,26 @@ def list_apps():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    gemnames = []
+    available_apps = list_apps()
+    if not available_apps:
+        return render_template('no_files.html')
+    for app in available_apps:
+        filepath = available_apps[app]
+        inputfile = open(filepath)
+        filecontent = inputfile.read()
+        inputfile.close()
+        deps = json.loads(filecontent)
+        gemnames += [str(x['name']) for x in deps]
+    gemnames = list(set(gemnames))
+    gemnames.sort()
+    gemnames = Markup(gemnames)
+    return render_template('index.html', gemnames=gemnames,
+                           apps=available_apps)
+
+
+@app.route('/info', methods=['GET', 'POST'])
+def info():
     apps = request.args.getlist('appname')
     print "Apps: ", apps
     gemname = request.args.get('gemname')
@@ -45,7 +65,7 @@ def index():
     if not apps:
         if not gemname:
             flag = 1
-            return render_template('index.html', gemnames=gemnames,
+            return render_template('info.html', gemnames=gemnames,
                                    apps=available_apps, flag=flag)
         else:
             apps = available_apps
@@ -57,7 +77,7 @@ def index():
             if gem:
                 flag = 1
             gems[app] = gem
-    return render_template('index.html',
+    return render_template('info.html',
                            gemnames=gemnames,
                            gemname=gemname,
                            gemlist=gems,
