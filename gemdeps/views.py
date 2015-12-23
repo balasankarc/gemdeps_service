@@ -73,7 +73,7 @@ def status(appname):
     filecontent = inputfile.read()
     inputfile.close()
     updated_time = time.strftime(
-        "%d/%m/%Y %H:%M:%S", time.gmtime(os.path.getmtime(filepath)))
+        "%d/%m/%Y %H:%M:%S %Z", time.gmtime(os.path.getmtime(filepath)))
     updated_time
     deps = json.loads(filecontent)
     packaged_count = 0
