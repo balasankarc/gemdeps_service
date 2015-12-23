@@ -23,13 +23,16 @@ def list_apps():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    apps = request.args.getlist('appname')
+    print "Apps: ", apps
+    gemname = request.args.get('gemname')
     completedeplist = {}
     gemnames = []
-    apps = list_apps()
-    if not apps:
+    available_apps = list_apps()
+    if not available_apps:
         return render_template('no_files.html')
-    for app in apps:
-        filepath = apps[app]
+    for app in available_apps:
+        filepath = available_apps[app]
         inputfile = open(filepath)
         filecontent = inputfile.read()
         inputfile.close()
@@ -39,24 +42,27 @@ def index():
     gemnames = list(set(gemnames))
     gemnames.sort()
     gemnames = Markup(gemnames)
-    if request.method == 'GET':
-        return render_template('index.html', gemnames=gemnames, apps=apps)
-    else:
-        apps = request.form.getlist('appname')
-        gemname = request.form.get('gemname')
-        gems = {}
-        flag = 0
-        for app in apps:
+    if not apps:
+        if not gemname:
+            flag = 1
+            return render_template('index.html', gemnames=gemnames,
+                                   apps=available_apps, flag=flag)
+        else:
+            apps = available_apps
+    gems = {}
+    flag = 0
+    for app in apps:
+        if app in available_apps:
             gem = [x for x in completedeplist[app] if x['name'] == gemname]
             if gem:
                 flag = 1
             gems[app] = gem
-        return render_template('index.html',
-                               gemnames=gemnames,
-                               gemname=gemname,
-                               gemlist=gems,
-                               flag=flag,
-                               apps=apps)
+    return render_template('index.html',
+                           gemnames=gemnames,
+                           gemname=gemname,
+                           gemlist=gems,
+                           flag=flag,
+                           apps=available_apps)
 
 
 @app.route('/status/<appname>')
