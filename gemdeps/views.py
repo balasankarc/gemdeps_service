@@ -3,7 +3,7 @@ import os
 import time
 import glob
 
-from flask import Markup, render_template, request, redirect
+from flask import jsonify, Markup, render_template, request, redirect
 
 from gemdeps import app
 
@@ -21,7 +21,7 @@ def list_apps():
     return apps
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
     gemnames = []
     available_apps = list_apps()
@@ -41,8 +41,7 @@ def index():
                            apps=available_apps)
 
 
-@app.route('/info', methods=['GET', 'POST'])
-def info():
+def infobase(request):
     apps = request.args.getlist('appname')
     print "Apps: ", apps
     gemname = request.args.get('gemname')
@@ -65,18 +64,29 @@ def info():
     if not apps:
         if not gemname:
             flag = 1
-            return render_template('info.html', gemnames=gemnames,
-                                   apps=available_apps, flag=flag)
+            return gemnames, None, None, 1, available_apps, None
         else:
             apps = available_apps
     gems = {}
     flag = 0
     for app in apps:
         if app in available_apps:
-            gem = [x for x in completedeplist[app] if x['name'] == gemname]
+            gem = next((x for x in completedeplist[
+                       app] if x['name'] == gemname), None)
             if gem:
                 flag = 1
-            gems[app] = gem
+                gems[app] = gem
+    return gemnames, gemname, gems, flag, available_apps, apps
+
+
+@app.route('/info')
+@app.route('/info/')
+def info():
+    gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
+    if not gemname:
+        flag = 1
+        return render_template('info.html', gemnames=gemnames,
+                               apps=available_apps, flag=flag)
     return render_template('info.html',
                            gemnames=gemnames,
                            gemname=gemname,
@@ -85,11 +95,21 @@ def info():
                            apps=available_apps)
 
 
-@app.route('/status/<appname>')
-def status(appname):
+@app.route('/api/info')
+@app.route('/api/info/')
+def apiinfo():
+    gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
+    if not gemname:
+        return "Specify a gem"
+    if not gems:
+        return "No results"
+    return jsonify(**gems)
+
+
+def statusbase(appname):
     apps = list_apps()
     if not apps or appname not in apps:
-        return render_template('no_files.html')
+        return None, None, None, None, None, None, None, None, None
     ignore_list = ['mini_portile2', 'newrelic_rpm', 'newrelic-grape',
                    'rb-fsevent', 'eco', 'eco-source']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -123,6 +143,18 @@ def status(appname):
     total = len(final_list)
     print total
     percent_complete = (packaged_count * 100) / total
+    return final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
+        total, percent_complete, updated_time, apps
+
+
+@app.route('/status')
+@app.route('/status/')
+def status():
+    appname = request.args.get('appname')
+    final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
+        total, percent_complete, updated_time, apps = statusbase(appname)
+    if not apps:
+        return render_template('no_files.html')
     return render_template('status.html',
                            appname=appname.title(),
                            deps=final_list,
@@ -137,7 +169,31 @@ def status(appname):
                            )
 
 
+@app.route('/api/status')
+@app.route('/api/status/')
+def apistatus():
+    appname = request.args.get('appname')
+    if not appname:
+        return "Specify an app"
+    final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
+        total, percent_complete, updated_time, apps = statusbase(appname)
+    if not apps:
+        return "No files found to generate statistics. Run gemdeps again."
+    json_out = {}
+    for item in final_list:
+        json_out[item['name']] = item
+    return jsonify(json_out)
+
+
+@app.route('/api')
+@app.route('/api/')
+def api():
+    apps = list_apps()
+    return render_template('api.html', apps=apps)
+
+
 @app.route('/about')
+@app.route('/about/')
 def about():
     apps = list_apps()
     return render_template('about.html', apps=apps)
@@ -153,6 +209,7 @@ def compare_lists(first_list, second_list):
 
 
 @app.route('/compare')
+@app.route('/compare/')
 def compare():
     available_apps = list_apps()
     apps = request.args.getlist('appname')
@@ -195,7 +252,7 @@ def compare():
             for item in app_dep_list[counter]:
                 if item['name'] == i['name']:
                     current[appname] = item
-            counter = counter+1
+            counter = counter + 1
         final[i['name']] = current
     color = {}
     for gem in final:
