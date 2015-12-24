@@ -18,7 +18,7 @@
                         <input class="typeahead form-control" style="width:100%" type="text" placeholder="Gem Name" name="gemname" id="gemname" value="{{gemname}}" required>
                     </div>
                     <div class="col-md-4">
-                        <select id="appname" name="appname" multiple="multiple" required>
+                        <select id="appname" name="appname" multiple="multiple" >
                             {% for app in apps %}
                                 <option value="{{app}}" {% if "{{app}}" in gemlist %} selected="true" {% endif %}>{{app.title()}}</option>
                             {% endfor %}
