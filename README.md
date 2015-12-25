@@ -1,4 +1,4 @@
-# gemdeps_service
+# gemdeps Web Service
 The web frontend for [gemdeps](http://github.com/balasankarc/python-gemdeps). It is begin used in FOSS Community of India's [Debian Ruby Gem Dependency Service](http://debian.fosscommunity.in/).
 
 Written in [Flask](http://flask.pocoo.org/) and styled using [Bootstrap](http://getbootstrap.com)
