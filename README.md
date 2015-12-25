@@ -1,7 +1,7 @@
 # gemdeps Web Service
-The web frontend for [gemdeps](http://github.com/balasankarc/python-gemdeps). It is begin used in FOSS Community of India's [Debian Ruby Gem Dependency Service](http://debian.fosscommunity.in/).
+The web frontend for [gemdeps](http://github.com/balasankarc/python-gemdeps). It is being used in FOSS Community of India's [Debian Ruby Gem Dependency Service](http://debian.fosscommunity.in/).
 
-Written in [Flask](http://flask.pocoo.org/) and styled using [Bootstrap](http://getbootstrap.com)
+Written in [Flask](http://flask.pocoo.org/) and styled using [Bootstrap](http://getbootstrap.com). Uses JSON for API responses.
 
 ## Features
  1. Details about the place of a gem in the dependency chain of an application - version requirement, parent gem, debian packaging status etc
