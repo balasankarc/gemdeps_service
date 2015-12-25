@@ -149,8 +149,11 @@ def statusbase(appname):
 
 @app.route('/status')
 @app.route('/status/')
-def status():
-    appname = request.args.get('appname')
+@app.route('/status/<appname>')
+@app.route('/status/<appname>/')
+def status(appname=''):
+    if appname == '':
+        appname = request.args.get('appname')
     final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
         total, percent_complete, updated_time, apps = statusbase(appname)
     if not apps:
