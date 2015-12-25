@@ -21,6 +21,7 @@ Written in [Flask](http://flask.pocoo.org/) and styled using [Bootstrap](http://
  3. Use [gemdeps](http://github.com/balasankarc/python-gemdeps) to generate necessary json files and copy them to the folder `gemdeps_service/static`
  4. Add a VirtualHost entry to Apache.
     - Create a file gemdeps.conf in /etc/apache2/sites-available with similar content as follows (May have to do this as sudo)
+
        ```
        <VirtualHost *:80>
                ServerName <desired server name>
