@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import json
 import os
 import time
@@ -9,6 +11,9 @@ from gemdeps import app
 
 
 def list_apps():
+    '''
+    Returns the list of available apps by scanning for debian_status.json files
+    '''
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     list_of_json = glob.glob(os.path.join(
         SITE_ROOT, 'static', '*_debian_status.json'))
@@ -23,6 +28,9 @@ def list_apps():
 
 @app.route('/')
 def index():
+    '''
+    Displas the home page
+    '''
     gemnames = []
     available_apps = list_apps()
     if not available_apps:
@@ -42,6 +50,10 @@ def index():
 
 
 def infobase(request):
+    '''
+    Returns the information about a specific gem related to specified apps.
+    Used to generate HTML as well as JSON output.
+    '''
     apps = request.args.getlist('appname')
     gemname = request.args.get('gemname')
     completedeplist = {}
@@ -81,6 +93,9 @@ def infobase(request):
 @app.route('/info')
 @app.route('/info/')
 def info():
+    '''
+    Displays the information about a specific gem related to specified apps.
+    '''
     gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
     if not gemname:
         flag = 1
@@ -97,6 +112,10 @@ def info():
 @app.route('/api/info')
 @app.route('/api/info/')
 def apiinfo():
+    '''
+    Displays the information about a specific gem related to specified apps
+    in JSON format.
+    '''
     gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
     if not gemname:
         return "Specify a gem"
@@ -106,6 +125,10 @@ def apiinfo():
 
 
 def statusbase(appname):
+    '''
+    Returns the packaging status of specified app. Used to generate HTML as
+    well as JSON output.
+    '''
     apps = list_apps()
     if not apps or appname not in apps:
         return None, None, None, None, None, None, None, None, None
@@ -150,6 +173,9 @@ def statusbase(appname):
 @app.route('/status/<appname>')
 @app.route('/status/<appname>/')
 def status(appname=''):
+    '''
+    Displays the packaging status of specified app.
+    '''
     if appname == '':
         appname = request.args.get('appname')
     final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
@@ -173,6 +199,9 @@ def status(appname=''):
 @app.route('/api/status')
 @app.route('/api/status/')
 def apistatus():
+    '''
+    Displays the packaging status of specified app in JSON format.
+    '''
     appname = request.args.get('appname')
     if not appname:
         return "Specify an app"
@@ -189,6 +218,9 @@ def apistatus():
 @app.route('/api')
 @app.route('/api/')
 def api():
+    '''
+    Displays the information page about API.
+    '''
     apps = list_apps()
     return render_template('api.html', apps=apps)
 
@@ -196,11 +228,17 @@ def api():
 @app.route('/about')
 @app.route('/about/')
 def about():
+    '''
+    Displays the about page.
+    '''
     apps = list_apps()
     return render_template('about.html', apps=apps)
 
 
 def compare_lists(first_list, second_list):
+    '''
+    Returns the elements belonging to both lists.
+    '''
     first_list_names = [x['name'] for x in first_list]
     result = []
     for item in second_list:
@@ -212,6 +250,10 @@ def compare_lists(first_list, second_list):
 @app.route('/compare')
 @app.route('/compare/')
 def compare():
+    '''
+    Displays the comparison between version dependencies of gems that are
+    common to specified apps.
+    '''
     available_apps = list_apps()
     apps = request.args.getlist('appname')
     if len(apps) < 2:
