@@ -43,7 +43,6 @@ def index():
 
 def infobase(request):
     apps = request.args.getlist('appname')
-    print "Apps: ", apps
     gemname = request.args.get('gemname')
     completedeplist = {}
     gemnames = []
@@ -141,7 +140,6 @@ def statusbase(appname):
             if i['satisfied'] == False:
                 mismatch += 1
     total = len(final_list)
-    print total
     percent_complete = (packaged_count * 100) / total
     return final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
         total, percent_complete, updated_time, apps
@@ -224,7 +222,6 @@ def compare():
     result = []
     app_dep_list = []
     for appname in apps:
-        print appname
         if appname not in available_apps:
             apps.remove(appname)
             continue
