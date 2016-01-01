@@ -31,10 +31,18 @@ $(function(){
 
 
 $(document).ready(function() {
-    if (window.location.href.contains('sort=satisfied'))
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    if (window.location.href.contains('sort='))
     {
+        var dictionary = {'gem': 1, 'requirement': 2, 'debversion': 3, 'suite': 4, 'status': 5, 'satisfied': 6};
+        var t = getParameterByName('sort');
         $('table').tablesorter(); 
-        var sorting = [[6,0]]; 
+        var sorting = [[dictionary[t],0]]; 
         $('table').trigger("sorton",[sorting]); 
         table = $('.tablesorter')[0];
         for(var i=0; i < table.tBodies[0].rows.length; i++)
