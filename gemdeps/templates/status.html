@@ -154,7 +154,13 @@ $(function() {
                     <td>{{count}}</td>
                     {% set count = count+1 %}
                     <td>
-                        {{dep['name']}}<br />
+                        {% if dep.link %}
+                        <a href={{dep.link}}>{{dep.name}}</a>
+                        {% else %}
+                        {{dep.name}}
+                        </a>
+                        {% endif %}
+                        <br />
                         <a href="http://rubygems.org/gems/{{ dep['name'] }}">RG</a> | 
                         <a href="/info?gemname={{dep['name']}}">Info</a>
                     </td>
