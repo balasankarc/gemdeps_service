@@ -133,7 +133,8 @@ def statusbase(appname):
     if not apps or appname not in apps:
         return None, None, None, None, None, None, None, None, None
     ignore_list = ['mini_portile2', 'newrelic_rpm', 'newrelic-grape',
-                   'rb-fsevent', 'eco', 'eco-source', 'gitlab_meta', 'cause']
+                   'rb-fsevent', 'eco', 'eco-source', 'gitlab_meta', 'cause',
+                   'rdoc']
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appfilename = appname + "_debian_status.json"
     filepath = os.path.join(SITE_ROOT, "static", appfilename)
