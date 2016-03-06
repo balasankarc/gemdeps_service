@@ -49,13 +49,14 @@ def index():
                            apps=available_apps)
 
 
-def infobase(request):
+def infobase(request, gemname=None):
     '''
     Returns the information about a specific gem related to specified apps.
     Used to generate HTML as well as JSON output.
     '''
     apps = request.args.getlist('appname')
-    gemname = request.args.get('gemname')
+    if not gemname:
+        gemname = request.args.get('gemname')
     completedeplist = {}
     gemnames = []
     available_apps = list_apps()
@@ -92,11 +93,16 @@ def infobase(request):
 
 @app.route('/info')
 @app.route('/info/')
-def info():
+@app.route('/info/<gemname>')
+@app.route('/info/<gemname>/')
+def info(gemname=''):
     '''
     Displays the information about a specific gem related to specified apps.
     '''
-    gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
+    if gemname == '':
+        gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
+    else:
+        gemnames, gemname, gems, flag, available_apps, apps = infobase(request, gemname)
     if not gemname:
         flag = 1
         return render_template('info.html', gemnames=gemnames,
