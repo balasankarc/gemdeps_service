@@ -38,12 +38,20 @@
                 <div class="panel-heading">{{ app.title() }}</div>
                 <div class="panel-body">
                     {% set gem = gemlist[app] %}
-                    Name : {{ gem['name'] }} <br />
-                    Group: {{ gem ['group'].title() }} <br />
-                    Debian Name : {{ gem['debian_name'] }} <br />
-                    Debian Version: {{gem ['version'] }} <br />
-                    Parent : {{ gem['parent'] }} <br />
-                    Requirement: {{ gem['requirement']}}
+                    <table class="table">
+                        <tr><td> Name</td><td>{{ gem['name'] }} </td></tr>
+                        <tr><td>Group</td><td>{{ gem['group'].title() }} </td></tr>
+                        <tr><td>Debian Name</td><td>{{ gem['debian_name'] }} </td></tr>
+                        <tr><td>Debian Version</td><td>{{ gem['debian_version'] }} </td></tr>
+                        <tr><td>Parent(s)</td>
+                            <td>
+                                {% for gem in gem['parent'] %} 
+                                {{ gem }} <br />
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr><td>Requirement</td><td>{{ gem['requirement'] }} </td></tr>
+                    </table>
                 </div>
             </div>
             {% endif %}
