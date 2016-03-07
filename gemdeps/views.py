@@ -374,13 +374,23 @@ def family(gemname=''):
     while True:
         try:
             currentgem = gemlist[counter]
-            dot.node(currentgem, _attributes = {'color': json_out[currentgem]['color']})
+            print currentgem
+            try:
+                color = json_out[currentgem]['color']
+            except:
+                color = 'black'
+            dot.node(currentgem, _attributes={'color': color})
             for item in relation:
                 if currentgem in relation[item]:
                     gemlist.append(item)
-                    string = "%s -> %s" % (item, currentgem)
-                    if string not in str(dot):
+                    string = '%s -> %s' % (item, currentgem)
+                    string2 = '"%s" -> %s' % (item, currentgem)
+                    string3 = '%s -> "%s"' % (item, currentgem)
+                    string4 = '"%s" -> "%s"' % (item, currentgem)
+                    if string not in str(dot) and string2 not in str(dot) and string3 not in str(dot) and string4 not in str(dot):
                         dot.edge(item, currentgem)
+                    else:
+                        print "Duplicate"
             counter = counter + 1
         except Exception, e:
             print e
