@@ -47,7 +47,8 @@
                             <td>
                                 {% for gem in gem['parent'] %} 
                                 {{ gem }} <br />
-                                {% endfor %}
+                                {% endfor %}<br />
+                                <a href="/family/{{gem['name']}}?appname={{app}}"><button class="btn btn-primary">View Family</button>
                             </td>
                         </tr>
                         <tr><td>Requirement</td><td>{{ gem['requirement'] }} </td></tr>

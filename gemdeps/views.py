@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
+import glob
 import json
 import os
 import time
-import glob
 
-from flask import jsonify, Markup, render_template, request, redirect
+from flask import Markup, jsonify, redirect, render_template, request
 
 from gemdeps import app
+from graphviz import Digraph
 
 
 def list_apps():
@@ -102,7 +103,8 @@ def info(gemname=''):
     if gemname == '':
         gemnames, gemname, gems, flag, available_apps, apps = infobase(request)
     else:
-        gemnames, gemname, gems, flag, available_apps, apps = infobase(request, gemname)
+        gemnames, gemname, gems, flag, available_apps, apps = infobase(
+            request, gemname)
     if not gemname:
         flag = 1
         return render_template('info.html', gemnames=gemnames,
@@ -321,3 +323,68 @@ def compare():
                            final=final,
                            color=color
                            )
+
+
+@app.route('/family')
+@app.route('/family/')
+@app.route('/family/<gemname>')
+@app.route('/family/<gemname>/')
+def family(gemname=''):
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+    appname = request.args.get('appname')
+
+    pngpath = os.path.join(SITE_ROOT, "static", "%s_%s.dot" % (gemname, appname))
+    available_apps = list_apps()
+    if appname not in available_apps:
+        return render_template('no_files.html')
+
+    filepath = available_apps[appname]
+    inputfile = open(filepath)
+    filecontent = inputfile.read()
+    inputfile.close()
+    deps = json.loads(filecontent)
+    json_out = {}
+    for item in deps:
+        json_out[item['name']] = item
+
+    filepath = os.path.join(SITE_ROOT, "static", "%s.dot" % appname)
+    if os.path.isfile(pngpath):
+        os.remove(pngpath)
+    if os.path.isfile(pngpath + '.svg'):
+        os.remove(pngpath + '.svg')
+
+    f = open(filepath)
+    dot_content = f.readlines()
+    f.close()
+    relation = {}
+    for line in dot_content:
+        if "->" not in line:
+            continue
+        line = line.strip()
+        blocks = line.split('->')
+        parent = blocks[0].strip().strip(';').strip('"')
+        child = blocks[1].strip().strip(';').strip('"')
+        if parent not in relation:
+            relation[parent] = []
+        relation[parent].append(child)
+    counter = 0
+    gemlist = []
+    gemlist.append(gemname)
+    dot = Digraph('sample', format='png')
+    while True:
+        try:
+            currentgem = gemlist[counter]
+            dot.node(currentgem, _attributes = {'color': json_out[currentgem]['color']})
+            for item in relation:
+                if currentgem in relation[item]:
+                    gemlist.append(item)
+                    string = "%s -> %s" % (item, currentgem)
+                    if string not in str(dot):
+                        dot.edge(item, currentgem)
+            counter = counter + 1
+        except Exception, e:
+            print e
+            break
+
+    dot.render(pngpath)
+    return redirect(os.path.join("./static", "%s_%s.dot.png" % (gemname, appname)))
