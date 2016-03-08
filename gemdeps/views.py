@@ -333,7 +333,7 @@ def family(gemname=''):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appname = request.args.get('appname')
 
-    pngpath = os.path.join(SITE_ROOT, "static", "%s_%s.dot" % (gemname, appname))
+    svgpath = os.path.join(SITE_ROOT, "static", "%s_%s.dot" % (gemname, appname))
     available_apps = list_apps()
     if appname not in available_apps:
         return render_template('no_files.html')
@@ -348,10 +348,10 @@ def family(gemname=''):
         json_out[item['name']] = item
 
     filepath = os.path.join(SITE_ROOT, "static", "%s.dot" % appname)
-    if os.path.isfile(pngpath):
-        os.remove(pngpath)
-    if os.path.isfile(pngpath + '.svg'):
-        os.remove(pngpath + '.svg')
+    if os.path.isfile(svgpath):
+        os.remove(svgpath)
+    if os.path.isfile(svgpath + '.svg'):
+        os.remove(svgpath + '.svg')
 
     f = open(filepath)
     dot_content = f.readlines()
@@ -370,7 +370,7 @@ def family(gemname=''):
     counter = 0
     gemlist = []
     gemlist.append(gemname)
-    dot = Digraph('sample', format='png')
+    dot = Digraph('sample', format='svg')
     while True:
         try:
             currentgem = gemlist[counter]
@@ -396,5 +396,11 @@ def family(gemname=''):
             print e
             break
 
-    dot.render(pngpath)
-    return redirect(os.path.join("./static", "%s_%s.dot.png" % (gemname, appname)))
+    dot.render(svgpath)
+    string2 = str(dot)
+    return render_template('graph.html',
+                           path=os.path.join("/static", "%s_%s.dot.svg"
+                                             % (gemname, appname)),
+                           gemname=gemname,
+                           appname=appname
+                           )
