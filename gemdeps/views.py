@@ -333,7 +333,8 @@ def family(gemname=''):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appname = request.args.get('appname')
 
-    svgpath = os.path.join(SITE_ROOT, "static", "%s_%s.dot" % (gemname, appname))
+    svgpath = os.path.join(SITE_ROOT, "static",
+                           "%s_%s.dot" % (gemname, appname))
     available_apps = list_apps()
     if appname not in available_apps:
         return render_template('no_files.html')
@@ -387,7 +388,10 @@ def family(gemname=''):
                     string2 = '"%s" -> %s' % (item, currentgem)
                     string3 = '%s -> "%s"' % (item, currentgem)
                     string4 = '"%s" -> "%s"' % (item, currentgem)
-                    if string not in str(dot) and string2 not in str(dot) and string3 not in str(dot) and string4 not in str(dot):
+                    if string not in str(dot) and \
+                       string2 not in str(dot) and \
+                       string3 not in str(dot) and \
+                       string4 not in str(dot):
                         dot.edge(item, currentgem)
                     else:
                         print "Duplicate"
