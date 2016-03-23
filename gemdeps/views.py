@@ -42,7 +42,7 @@ def index():
         filecontent = inputfile.read()
         inputfile.close()
         deps = json.loads(filecontent)
-        gemnames += [str(x['name']) for x in deps]
+        gemnames += [str(x['name']) for y, x in deps.items()]
     gemnames = list(set(gemnames))
     gemnames.sort()
     gemnames = Markup(gemnames)
@@ -70,7 +70,7 @@ def infobase(request, gemname=None):
         inputfile.close()
         deps = json.loads(filecontent)
         completedeplist[app] = deps
-        gemnames += [str(x['name']) for x in deps]
+        gemnames += [str(x['name']) for t, x in deps.items()]
     gemnames = list(set(gemnames))
     gemnames.sort()
     gemnames = Markup(gemnames)
@@ -84,8 +84,8 @@ def infobase(request, gemname=None):
     flag = 0
     for app in apps:
         if app in available_apps:
-            gem = next((x for x in completedeplist[
-                       app] if x['name'] == gemname), None)
+            gem = next((x for t, x in completedeplist[
+                       app].items() if x['name'] == gemname), None)
             if gem:
                 flag = 1
                 gems[app] = gem
@@ -158,7 +158,7 @@ def statusbase(appname):
     total = 0
     mismatch = 0
     final_list = []
-    for i in deps:
+    for x, i in deps.items():
         if i['name'] in ignore_list:
             continue
         else:
@@ -248,9 +248,9 @@ def compare_lists(first_list, second_list):
     '''
     Returns the elements belonging to both lists.
     '''
-    first_list_names = [x['name'] for x in first_list]
+    first_list_names = [x['name'] for t, x in first_list.items()]
     result = []
-    for item in second_list:
+    for t, item in second_list.items():
         if item['name'] in first_list_names:
             result.append(item)
     return result
@@ -300,7 +300,7 @@ def compare():
         counter = 0
         while counter < len(app_dep_list):
             appname = apps[counter]
-            for item in app_dep_list[counter]:
+            for t, item in app_dep_list[counter].items():
                 if item['name'] == i['name']:
                     current[appname] = item
             counter = counter + 1
@@ -345,8 +345,8 @@ def family(gemname=''):
     inputfile.close()
     deps = json.loads(filecontent)
     json_out = {}
-    for item in deps:
-        json_out[item['name']] = item
+    for x, item in deps.items():
+        json_out[x] = item
 
     filepath = os.path.join(SITE_ROOT, "static", "%s.dot" % appname)
     if os.path.isfile(svgpath):
