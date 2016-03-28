@@ -250,7 +250,7 @@ def compare_lists(first_list, second_list):
     '''
     result = {}
     for t, item in second_list.items():
-        if t in second_list:
+        if t in first_list:
             result[t] = item
     return result
 

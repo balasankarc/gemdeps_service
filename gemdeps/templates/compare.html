@@ -112,7 +112,14 @@ $(function() {
                             <a href="/info?gemname={{gem}}">Info</a>
                         </td>
                         {% for app in final[gem] %}
-                        <td>{{final[gem][app]['requirement']}} </td>
+                        <td>
+                            {{final[gem][app]['requirement']}}<br />
+                            {% if final[gem][app]['satisfied'] %}
+                            Yes
+                            {% else %}
+                            No
+                            {% endif %}
+                        </td>
                         {% endfor %}
                         {% set keys= final[gem].keys() %}
                         <td>{{final[gem][keys[0]]['version']}}</td>
