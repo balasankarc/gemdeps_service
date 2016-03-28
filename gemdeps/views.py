@@ -248,11 +248,10 @@ def compare_lists(first_list, second_list):
     '''
     Returns the elements belonging to both lists.
     '''
-    first_list_names = [x['name'] for t, x in first_list.items()]
-    result = []
+    result = {}
     for t, item in second_list.items():
-        if item['name'] in first_list_names:
-            result.append(item)
+        if t in second_list:
+            result[t] = item
     return result
 
 
@@ -300,30 +299,34 @@ def compare():
         counter = 0
         while counter < len(app_dep_list):
             appname = apps[counter]
-            for t, item in app_dep_list[counter].items():
-                if item['name'] == i['name']:
-                    current[appname] = item
+            current[appname] = app_dep_list[counter][i]
             counter = counter + 1
-        final[i['name']] = current
+        final[i] = current
     color = {}
+    gem_status = {}
     for gem in final:
-        keys = final[gem].keys()
-        current_color = final[gem][keys[0]]['color']
-        if current_color != 'green':
-            color[gem] = 'red'
+        gem_status[gem] = None
+        flag = False
+        for app in final[gem]:
+            if gem_status[gem] == None:
+                gem_status[gem] = final[gem][app]['satisfied']
+            else:
+                if gem_status[gem] != final[gem][app]['satisfied']:
+                    flag = True
+                gem_status[gem] = gem_status[gem] and final[gem][app]['satisfied']
+        if gem_status[gem]:
+            color[gem] = 'green'
         else:
-            for app in final[gem]:
-                if current_color != final[gem][app]['color']:
-                    color[gem] = 'violet'
-                    break
-                color[gem] = current_color
+            if flag:
+                color[gem] = 'violet'
+            else:
+                color[gem] = 'red'
     return render_template('compare.html',
                            apps=available_apps,
                            selected_apps=apps,
                            final=final,
                            color=color
                            )
-
 
 @app.route('/family')
 @app.route('/family/')
