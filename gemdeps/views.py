@@ -191,6 +191,13 @@ def status(appname=''):
         total, percent_complete, updated_time, apps = statusbase(appname)
     if not apps:
         return render_template('no_files.html')
+    if request.args.get('type'):
+        if request.args.get('type') == 'incompletemarkdown':
+            output = ""
+            for item in final_list:
+                if item['satisfied'] == False:
+                    output += " - [ ] " + item['name'] + "  |  " + item['requirement'] + "   |  " + item['version'] +"<br />"
+            return output
     return render_template('status.html',
                            appname=appname.title(),
                            deps=final_list,
