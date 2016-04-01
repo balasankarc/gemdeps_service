@@ -143,6 +143,22 @@ def statusbase(appname):
     ignore_list = ['mini_portile2', 'newrelic_rpm', 'newrelic-grape',
                    'rb-fsevent', 'eco', 'eco-source', 'gitlab_meta', 'cause',
                    'rdoc']
+    try:
+
+        listed_gems = []
+        l = []
+        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+        gemlockfilename = appname + "_Gemfile.lock"
+        filepath = os.path.join(SITE_ROOT, "static", gemlockfilename)
+        gemfile_lock = open(filepath).readlines()
+        for line in gemfile_lock:
+            listed_gems.append(filter(None, line).strip().split(' ')[0])
+        l = [gem for gem in listed_gems if not gem.isupper()]
+        l = set(l)
+    except Exception, e:
+        print e
+        pass
+
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     appfilename = appname + "_debian_status.json"
     filepath = os.path.join(SITE_ROOT, "static", appfilename)
@@ -160,6 +176,9 @@ def statusbase(appname):
     final_list = []
     for x, i in deps.items():
         if i['name'] in ignore_list:
+            continue
+        elif i['name'] not in l:
+            print "Ignored ", i['name']
             continue
         else:
             final_list.append(i)
