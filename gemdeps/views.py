@@ -140,9 +140,9 @@ def statusbase(appname):
     apps = list_apps()
     if not apps or appname not in apps:
         return None, None, None, None, None, None, None, None, None
-    ignore_list = ['mini_portile2', 'newrelic_rpm', 'newrelic-grape',
-                   'rb-fsevent', 'eco', 'eco-source', 'gitlab_meta', 'cause',
-                   'rdoc']
+    ignore_list = ['fog-google', 'mini_portile2', 'newrelic_rpm',
+                   'newrelic-grape', 'rb-fsevent', 'eco', 'eco-source',
+                   'gitlab_meta', 'cause', 'rdoc', 'yard']
     try:
 
         listed_gems = []
