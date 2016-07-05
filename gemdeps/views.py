@@ -155,7 +155,7 @@ def statusbase(appname):
             listed_gems.append(filter(None, line).strip().split(' ')[0])
         l = [gem for gem in listed_gems if not gem.isupper()]
         l = set(l)
-    except Exception, e:
+    except Exception as e:
         print e
         pass
 
@@ -230,29 +230,29 @@ def get_incomplete(final_list):
                     if len(required.version) == 3:
                         if required.version[0] != version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[-1]:
                             minor += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         else:
                             patch += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                     elif len(required.version) == 2:
                         if required.version[0] != version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[-1]:
                             minor += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                     elif len(required.version) == 1:
                         if required.version[0] != version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
-                                requirement_raw + " | " + version_raw +\
+                                item['requirement'] + " | " + version_raw +\
                                 "<br />"
                 else:
                     min_length = min(len(required.version),
@@ -265,29 +265,29 @@ def get_incomplete(final_list):
                             break
                     if mismatch == 0:
                         major += " - [ ] " + item['name'] + " | " +\
-                            requirement_raw + " | " + version_raw +\
+                            item['requirement'] + " | " + version_raw +\
                             "<br />"
                     elif mismatch == 1:
                         minor += " - [ ] " + item['name'] + " | " +\
-                            requirement_raw + " | " + version_raw +\
+                            item['requirement'] + " | " + version_raw +\
                             "<br />"
                     elif mismatch == 2:
                         patch += " - [ ] " + item['name'] + " | " +\
-                            requirement_raw + " | " + version_raw +\
+                            item['requirement'] + " | " + version_raw +\
                             "<br />"
     output = ""
     if unpackaged != "":
-        unpackaged = "Unpackaged gems <br />" + unpackaged
-        output += unpackaged
+        unpackaged = "**Unpackaged gems** <br />" + unpackaged
+        output += "<br />" + unpackaged
     if patch != "":
-        patch = "Patch updates <br />" + patch
-        output += patch
+        patch = "**Patch updates** <br />" + patch
+        output += "<br />" + patch
     if minor != "":
-        minor = "Minor updates <br />" + minor
-        output += minor
+        minor = "**Minor updates** <br />" + minor
+        output += "<br />" + minor
     if major != "":
-        major = "Major updates <br />" + major
-        output += major
+        major = "**Major updates** <br />" + major
+        output += "<br />" + major
     return output
 
 
