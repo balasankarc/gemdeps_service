@@ -43,8 +43,7 @@ def index():
         inputfile.close()
         deps = json.loads(filecontent)
         gemnames += [str(x['name']) for y, x in deps.items()]
-    gemnames = list(set(gemnames))
-    gemnames.sort()
+    gemnames = sorted(set(gemnames))
     gemnames = Markup(gemnames)
     return render_template('index.html', gemnames=gemnames,
                            apps=available_apps)
@@ -71,8 +70,7 @@ def infobase(request, gemname=None):
         deps = json.loads(filecontent)
         completedeplist[app] = deps
         gemnames += [str(x['name']) for t, x in deps.items()]
-    gemnames = list(set(gemnames))
-    gemnames.sort()
+    gemnames = sorted(set(gemnames))
     gemnames = Markup(gemnames)
     if not apps:
         if not gemname:
@@ -196,7 +194,9 @@ def status(appname=''):
             output = ""
             for item in final_list:
                 if item['satisfied'] == False:
-                    output += " - [ ] " + item['name'] + "  |  " + item['requirement'] + "   |  " + item['version'] +"<br />"
+                    output += " - [ ] " + item['name'] + "  |  " + \
+                        item['requirement'] + "   |  " + \
+                        item['version'] + "<br />"
             return output
     return render_template('status.html',
                            appname=appname.title(),
@@ -315,12 +315,13 @@ def compare():
         gem_status[gem] = None
         flag = False
         for app in final[gem]:
-            if gem_status[gem] == None:
+            if gem_status[gem] is None:
                 gem_status[gem] = final[gem][app]['satisfied']
             else:
                 if gem_status[gem] != final[gem][app]['satisfied']:
                     flag = True
-                gem_status[gem] = gem_status[gem] and final[gem][app]['satisfied']
+                gem_status[gem] = gem_status[
+                    gem] and final[gem][app]['satisfied']
         if gem_status[gem]:
             color[gem] = 'green'
         else:
@@ -334,6 +335,7 @@ def compare():
                            final=final,
                            color=color
                            )
+
 
 @app.route('/family')
 @app.route('/family/')
@@ -406,7 +408,7 @@ def family(gemname=''):
                     else:
                         print "Duplicate"
             counter = counter + 1
-        except Exception, e:
+        except Exception as e:
             print e
             break
 
