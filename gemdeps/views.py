@@ -3,12 +3,14 @@
 import glob
 import json
 import os
+import re
 import time
+from distutils.version import LooseVersion
 
 from flask import Markup, jsonify, redirect, render_template, request
+from graphviz import Digraph
 
 from gemdeps import app
-from graphviz import Digraph
 
 
 def list_apps():
@@ -167,12 +169,107 @@ def statusbase(appname):
                 itp_count += 1
             else:
                 unpackaged_count += 1
-            if i['satisfied'] == False:
+            if i['satisfied'] is False:
                 mismatch += 1
     total = len(final_list)
     percent_complete = (packaged_count * 100) / total
     return final_list, packaged_count, unpackaged_count, itp_count, mismatch, \
         total, percent_complete, updated_time, apps
+
+
+def get_operator(requirement):
+    '''
+    Splits the operator and version from a requirement string.
+    '''
+    if requirement == '':
+        return '>=', '0'
+    m = re.search("\d", requirement)
+    pos = m.start()
+    if pos == 0:
+        return '=', requirement
+    check = requirement[:pos].strip()
+    ver = requirement[pos:]
+    return check, ver
+
+
+def get_incomplete(final_list):
+    unpackaged = ""
+    patch = ""
+    minor = ""
+    major = ""
+    for item in final_list:
+        if item['satisfied'] is False:
+            if item['version'] == 'NA':
+                unpackaged += " - [ ] " + item['name'] + " | " +\
+                    item['requirement'] + "<br />"
+            else:
+                check, requirement_raw = get_operator(item['requirement'])
+                required = LooseVersion(requirement_raw)
+                version_raw = item['version'][:item['version'].index('-')]
+                version = LooseVersion(version_raw)
+                if len(required.version) == len(version.version):
+                    if len(required.version) == 3:
+                        if required.version[0] != version.version[0]:
+                            major += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                        elif required.version[1] != version.version[-1]:
+                            minor += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                        else:
+                            patch += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                    elif len(required.version) == 2:
+                        if required.version[0] != version.version[0]:
+                            major += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                        elif required.version[1] != version.version[-1]:
+                            minor += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                    elif len(required.version) == 1:
+                        if required.version[0] != version.version[0]:
+                            major += " - [ ] " + item['name'] + " | " +\
+                                requirement_raw + " | " + version_raw +\
+                                "<br />"
+                else:
+                    min_length = min(len(required.version),
+                                     len(version.version))
+                    mismatch = 0
+                    for position in range(min_length):
+                        if required.version[position] != \
+                                version.version[position]:
+                            mismatch = position
+                            break
+                    if mismatch == 0:
+                        major += " - [ ] " + item['name'] + " | " +\
+                            requirement_raw + " | " + version_raw +\
+                            "<br />"
+                    elif mismatch == 1:
+                        minor += " - [ ] " + item['name'] + " | " +\
+                            requirement_raw + " | " + version_raw +\
+                            "<br />"
+                    elif mismatch == 2:
+                        patch += " - [ ] " + item['name'] + " | " +\
+                            requirement_raw + " | " + version_raw +\
+                            "<br />"
+    output = ""
+    if unpackaged != "":
+        unpackaged = "Unpackaged gems <br />" + unpackaged
+        output += unpackaged
+    if patch != "":
+        patch = "Patch updates <br />" + patch
+        output += patch
+    if minor != "":
+        minor = "Minor updates <br />" + minor
+        output += minor
+    if major != "":
+        major = "Major updates <br />" + major
+        output += major
+    return output
 
 
 @app.route('/status')
@@ -191,12 +288,7 @@ def status(appname=''):
         return render_template('no_files.html')
     if request.args.get('type'):
         if request.args.get('type') == 'incompletemarkdown':
-            output = ""
-            for item in final_list:
-                if item['satisfied'] == False:
-                    output += " - [ ] " + item['name'] + "  |  " + \
-                        item['requirement'] + "   |  " + \
-                        item['version'] + "<br />"
+            output = get_incomplete(final_list)
             return output
     return render_template('status.html',
                            appname=appname.title(),
