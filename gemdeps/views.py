@@ -214,7 +214,8 @@ def get_operator(requirement):
 def get_incomplete(final_list):
     unpackaged = ""
     patch = ""
-    minor = ""
+    minor_stable = ""
+    minor_devel = ""
     major = ""
     for item in final_list:
         if item['satisfied'] is False:
@@ -233,9 +234,14 @@ def get_incomplete(final_list):
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[-1]:
-                            minor += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            if required.version[0] > 0:
+                                minor_stable += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
+                            else:
+                                minor_devel += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
                         else:
                             patch += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
@@ -246,9 +252,14 @@ def get_incomplete(final_list):
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[-1]:
-                            minor += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            if required.version[0] > 0:
+                                minor_stable += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
+                            else:
+                                minor_devel += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
                     elif len(required.version) == 1:
                         if required.version[0] != version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
@@ -268,9 +279,14 @@ def get_incomplete(final_list):
                             item['requirement'] + " | " + version_raw +\
                             "<br />"
                     elif mismatch == 1:
-                        minor += " - [ ] " + item['name'] + " | " +\
-                            item['requirement'] + " | " + version_raw +\
-                            "<br />"
+                        if required.version[0] > 0:
+                            minor_stable += " - [ ] " + item['name'] + " | " +\
+                                item['requirement'] + " | " + version_raw +\
+                                "<br />"
+                        else:
+                            minor_devel += " - [ ] " + item['name'] + " | " +\
+                                item['requirement'] + " | " + version_raw +\
+                                "<br />"
                     elif mismatch == 2:
                         patch += " - [ ] " + item['name'] + " | " +\
                             item['requirement'] + " | " + version_raw +\
@@ -282,9 +298,12 @@ def get_incomplete(final_list):
     if patch != "":
         patch = "**Patch updates** <br />" + patch
         output += "<br />" + patch
-    if minor != "":
-        minor = "**Minor updates** <br />" + minor
-        output += "<br />" + minor
+    if minor_stable != "":
+        minor_stable = "**Minor updates (Stable)** <br />" + minor_stable
+        output += "<br />" + minor_stable
+    if minor_devel != "":
+        minor_devel = "**Minor updates (Development)** <br />" + minor_devel
+        output += "<br />" + minor_devel
     if major != "":
         major = "**Major updates** <br />" + major
         output += "<br />" + major
