@@ -233,7 +233,7 @@ def get_incomplete(final_list):
                             major += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
-                        elif required.version[1] != version.version[-1]:
+                        elif required.version[1] != version.version[1]:
                             if required.version[0] > 0:
                                 minor_stable += " - [ ] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
@@ -251,7 +251,7 @@ def get_incomplete(final_list):
                             major += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
-                        elif required.version[1] != version.version[-1]:
+                        elif required.version[1] != version.version[1]:
                             if required.version[0] > 0:
                                 minor_stable += " - [ ] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
