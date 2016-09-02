@@ -231,68 +231,44 @@ def get_incomplete(final_list):
                     epoch_pos = version_raw.index(":")
                     version_raw = version_raw[epoch_pos + 1:]
                 version = LooseVersion(version_raw)
+                string_incomplete = " - [ ] %s | %s | %s <br />" % (
+                    item['name'], item['requirement'], version_raw)
+                string_complete = " - [x] %s | %s | %s <br />" % (
+                    item['name'], item['requirement'], version_raw)
                 if len(required.version) == len(version.version):
                     if len(required.version) == 3:
                         if required.version[0] > version.version[0]:
-                            major += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            major += string_incomplete
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [x] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            already_newer += string_complete
                         elif required.version[1] != version.version[1]:
                             if required.version[1] < version.version[1]:
-                                already_newer += " - [x] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                already_newer += string_complete
                             elif required.version[0] > 0:
-                                minor_stable += " - [ ] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                minor_stable += string_incomplete
                             else:
-                                minor_devel += " - [ ] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                minor_devel += string_incomplete
                         else:
                             if required.version[2] < version.version[2]:
-                                already_newer += " - [x] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
-                            patch += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                                already_newer += string_complete
+                            patch += string_incomplete
                     elif len(required.version) == 2:
                         if required.version[0] > version.version[0]:
-                            major += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            major += string_incomplete
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [x] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            already_newer += string_complete
                         elif required.version[1] != version.version[1]:
                             if required.version[1] < version.version[1]:
-                                already_newer += " - [x] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                already_newer += string_complete
                             elif required.version[0] > 0:
-                                minor_stable += " - [ ] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                minor_stable += string_incomplete
                             else:
-                                minor_devel += " - [ ] " + item['name'] + " | " +\
-                                    item['requirement'] + " | " + version_raw +\
-                                    "<br />"
+                                minor_devel += string_incomplete
                     elif len(required.version) == 1:
                         if required.version[0] > version.version[0]:
-                            major += " - [ ] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            major += string_incomplete
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [x] " + item['name'] + " | " +\
-                                item['requirement'] + " | " + version_raw +\
-                                "<br />"
+                            already_newer += string_complete
                 else:
                     min_length = min(len(required.version),
                                      len(version.version))
