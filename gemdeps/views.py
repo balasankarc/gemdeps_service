@@ -238,12 +238,12 @@ def get_incomplete(final_list):
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [ ] " + item['name'] + " | " +\
+                            already_newer += " - [x] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[1]:
                             if required.version[1] < version.version[1]:
-                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                already_newer += " - [x] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
                             elif required.version[0] > 0:
@@ -256,7 +256,7 @@ def get_incomplete(final_list):
                                     "<br />"
                         else:
                             if required.version[2] < version.version[2]:
-                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                already_newer += " - [x] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
                             patch += " - [ ] " + item['name'] + " | " +\
@@ -268,12 +268,12 @@ def get_incomplete(final_list):
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [ ] " + item['name'] + " | " +\
+                            already_newer += " - [x] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[1] != version.version[1]:
                             if required.version[1] < version.version[1]:
-                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                already_newer += " - [x] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
                             elif required.version[0] > 0:
@@ -290,7 +290,7 @@ def get_incomplete(final_list):
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                         elif required.version[0] < version.version[0]:
-                            already_newer += " - [ ] " + item['name'] + " | " +\
+                            already_newer += " - [x] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                 else:
