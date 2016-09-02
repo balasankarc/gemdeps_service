@@ -217,6 +217,7 @@ def get_incomplete(final_list):
     minor_stable = ""
     minor_devel = ""
     major = ""
+    already_newer = ""
     for item in final_list:
         if item['satisfied'] is False:
             if item['version'] == 'NA':
@@ -226,15 +227,26 @@ def get_incomplete(final_list):
                 check, requirement_raw = get_operator(item['requirement'])
                 required = LooseVersion(requirement_raw)
                 version_raw = item['version'][:item['version'].index('-')]
+                if ":" in version_raw:
+                    epoch_pos = version_raw.index(":")
+                    version_raw = version_raw[epoch_pos + 1:]
                 version = LooseVersion(version_raw)
                 if len(required.version) == len(version.version):
                     if len(required.version) == 3:
-                        if required.version[0] != version.version[0]:
+                        if required.version[0] > version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
+                        elif required.version[0] < version.version[0]:
+                            already_newer += " - [ ] " + item['name'] + " | " +\
+                                item['requirement'] + " | " + version_raw +\
+                                "<br />"
                         elif required.version[1] != version.version[1]:
-                            if required.version[0] > 0:
+                            if required.version[1] < version.version[1]:
+                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
+                            elif required.version[0] > 0:
                                 minor_stable += " - [ ] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
@@ -243,16 +255,28 @@ def get_incomplete(final_list):
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
                         else:
+                            if required.version[2] < version.version[2]:
+                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
                             patch += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                     elif len(required.version) == 2:
-                        if required.version[0] != version.version[0]:
+                        if required.version[0] > version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
+                        elif required.version[0] < version.version[0]:
+                            already_newer += " - [ ] " + item['name'] + " | " +\
+                                item['requirement'] + " | " + version_raw +\
+                                "<br />"
                         elif required.version[1] != version.version[1]:
-                            if required.version[0] > 0:
+                            if required.version[1] < version.version[1]:
+                                already_newer += " - [ ] " + item['name'] + " | " +\
+                                    item['requirement'] + " | " + version_raw +\
+                                    "<br />"
+                            elif required.version[0] > 0:
                                 minor_stable += " - [ ] " + item['name'] + " | " +\
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
@@ -261,8 +285,12 @@ def get_incomplete(final_list):
                                     item['requirement'] + " | " + version_raw +\
                                     "<br />"
                     elif len(required.version) == 1:
-                        if required.version[0] != version.version[0]:
+                        if required.version[0] > version.version[0]:
                             major += " - [ ] " + item['name'] + " | " +\
+                                item['requirement'] + " | " + version_raw +\
+                                "<br />"
+                        elif required.version[0] < version.version[0]:
+                            already_newer += " - [ ] " + item['name'] + " | " +\
                                 item['requirement'] + " | " + version_raw +\
                                 "<br />"
                 else:
@@ -307,6 +335,10 @@ def get_incomplete(final_list):
     if major != "":
         major = "**Major updates** <br />" + major
         output += "<br />" + major
+    if already_newer != "":
+        already_newer = "**Already Newer** <br />" + already_newer
+        output += "<br />" + already_newer
+
     return output
 
 
